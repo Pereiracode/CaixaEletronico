@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore;
+using System;
 
 namespace Caixa.API
 {
@@ -25,6 +21,22 @@ namespace Caixa.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("V1", new OpenApiInfo
+                {
+                    Title = "Api Caixa Eletrônico",
+                    Version = "V1",
+                    Description = "Documentação de uma Api que simula um caixa eletrônico",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Mateus Pereira",
+                        Email = "contato.pereiracode@gmail.com",
+                        Url = new Uri("https://github.com/pereiracode/caixaeletronico")
+                    }
+                });
+            });
+
             services.AddControllers();
         }
 
@@ -41,6 +53,12 @@ namespace Caixa.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+                c.SwaggerEndpoint("/swagger/V1/swagger.json", "V1")
+            );
 
             app.UseEndpoints(endpoints =>
             {
