@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore;
 using System;
+using Microsoft.EntityFrameworkCore;
+using Caixa.Data.Context;
+using Caixa.Data.Repository;
 
 namespace Caixa.API
 {
@@ -36,6 +39,13 @@ namespace Caixa.API
                     }
                 });
             });
+
+            services.AddDbContext<ApplicationContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ApplicationContext>();
+
+            services.AddScoped<AccountRepository>();
 
             services.AddControllers();
         }
