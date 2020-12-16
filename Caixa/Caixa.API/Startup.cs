@@ -48,6 +48,8 @@ namespace Caixa.API
 
             services.AddScoped<IAccountRepository, AccountRepository>();
 
+            services.AddScoped<IBankNoteRepository, BankNoteRepository>();
+
             services.AddControllers();
         }
 

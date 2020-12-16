@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Caixa.API.Models;
+using Caixa.Business.Interfaces;
+using System.Threading.Tasks;
+using System;
 
 namespace Caixa.API.Controllers
 {
@@ -8,36 +11,54 @@ namespace Caixa.API.Controllers
     [ApiController]
     public class BankNotesController : ControllerBase
     {
-        // GET: api/<BankNotesController>
+        private readonly IBankNoteRepository _banknoteRepository;
+
+        public BankNotesController(IBankNoteRepository banknoteRepository)
+        {
+            _banknoteRepository = banknoteRepository;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<BankNote>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return await _banknoteRepository.GetAll();
         }
 
-        // GET api/<BankNotesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<BankNote>> GetId(Guid id)
         {
-            return "value";
+            var banknote = await _banknoteRepository.Get(id);
+
+            if (banknote == null) return NotFound();
+
+            return Ok(banknote);
         }
 
-        // POST api/<BankNotesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<BankNote>> Post(BankNote banknote)
         {
+            banknote.Id = Guid.NewGuid();
+
+            _banknoteRepository.Save(banknote);
+
+            return CreatedAtAction("GetId", new { id = banknote.Id }, banknote);
         }
 
-        // PUT api/<BankNotesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<ActionResult<BankNote>> Put(BankNote banknote)
         {
+            _banknoteRepository.Update(banknote);
+
+            return NoContent();
         }
 
-        // DELETE api/<BankNotesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult<BankNote>> Delete(Guid id)
         {
+            _banknoteRepository.Delete(id);
+
+            return Ok();
+
         }
     }
 }
