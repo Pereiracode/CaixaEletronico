@@ -1,4 +1,5 @@
-﻿using Caixa.Business.Models;
+﻿using Caixa.Business.Interfaces;
+using Caixa.Business.Models;
 using Caixa.Data.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,46 +10,38 @@ using System.Threading.Tasks;
 
 namespace Caixa.Data.Repository
 {
-    public class AccountRepository
+    public class AccountRepository : Repository<Account>, IAccountRepository
     {
-        private readonly ApplicationContext _context;
-        public AccountRepository(ApplicationContext context)
+
+        public AccountRepository(ApplicationContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task<IEnumerable<Account>> ObterTodasContas()
-        {
-            return await _context.Accounts.ToListAsync();
-        }
+        //public async Task<Account> Get(Guid id)
+        //{
+        //    return await _accountrepository.Get(id);
+        //}
 
-        public async Task<Account> ObterContaPorId(Guid id)
-        {
-            return await _context.Accounts.FindAsync(id);
-        }
+        //public async Task<IEnumerable<Account>> GetAll()
+        //{
+        //    return await _accountrepository.GetAll();
+        //}
 
-        public void CriarConta(Account account)
-        {
-            _context.Add(account);
+        //public void Save(Account account)
+        //{
+        //    _accountrepository.Save(account);
+        //}
 
-            _context.SaveChangesAsync();
-        }
+        //public void Update(Account account)
+        //{
+        //    _accountrepository.Update(account);
+        //}
 
-        public async Task<bool> AtualizarConta(Guid id, Account account)
-        {
-            // TODO: resolver problema para atualizar
+        //public void Delete(Guid id)
+        //{
+        //    _accountrepository.Delete(id);
+        //}
 
-            if (id != account.Id)
-            {
-                return false;
-            }
-
-            _context.Entry(account).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
 
     }
 }

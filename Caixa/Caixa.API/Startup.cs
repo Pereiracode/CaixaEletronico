@@ -9,6 +9,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Caixa.Data.Context;
 using Caixa.Data.Repository;
+using Caixa.Business.Interfaces;
 
 namespace Caixa.API
 {
@@ -45,7 +46,7 @@ namespace Caixa.API
 
             services.AddScoped<ApplicationContext>();
 
-            services.AddScoped<AccountRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             services.AddControllers();
         }
